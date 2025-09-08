@@ -1,13 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
+import session from "express-session";
 import cors from "cors";
-import dotenv from "dotenv";
 import helmet from "helmet";
 import passport from "passport";
 import auth from "./routes/auth";
 import "./config/passport";
-
-dotenv.config();
 
 const app = express();
 
@@ -31,6 +32,13 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
 
+app.use(
+  session({
+    secret: process.env.JWT_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 

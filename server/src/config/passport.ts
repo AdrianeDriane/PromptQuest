@@ -8,7 +8,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: process.env.GOOGLE_CALLBACK_URL!,
-      passReqToCallback: true, // allows access to req in the callback
+      passReqToCallback: true,
     },
     async (req, _, __, profile, done) => {
       try {
@@ -37,22 +37,18 @@ passport.use(
         let user = await User.findOne({ googleId: profile.id });
 
         if (user) {
-          // Return existing user with fingerprint attached
           return done(null, { ...user.toObject(), fingerprint });
         }
 
-        // Check if email exists but registered manually
         user = await User.findOne({ email });
 
         if (user) {
-          // Soft merge Google account into manual account
           user.googleId = profile.id;
           user.fullName = profile.displayName;
           await user.save();
           return done(null, { ...user.toObject(), fingerprint });
         }
 
-        // If no user with this Google ID or email, then create new/register
         const newUser = await User.create({
           googleId: profile.id,
           email,
