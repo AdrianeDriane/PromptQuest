@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fireboy & Watergirl: Rising Flood</title>
+    <title>FloodQuest: The Truth Unleashed</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./src/styles.css">
+    <link rel="stylesheet" href="./src/styles.css" />
+    <link rel="icon" type="image/png" href="./src/images/logo.png" />
   </head>
   <body class="bg-gray-900 text-white min-h-screen">
     <div class="container mx-auto px-4 py-8">
       <div class="text-center mb-4">
-        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
+        <h1
+          class="text-4xl font-bold mb-2 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent"
+        >
           Fireboy & Watergirl: Rising Flood
         </h1>
         <div class="flex justify-center gap-8 mb-4">
@@ -18,7 +21,8 @@
             <span class="font-bold">🔥 Vico (Fireboy):</span> WASD to move
           </div>
           <div class="text-blue-400">
-            <span class="font-bold">💧 Risa (Watergirl):</span> Arrow keys to move
+            <span class="font-bold">💧 Risa (Watergirl):</span> Arrow keys to
+            move
           </div>
         </div>
         <div class="flex justify-center gap-6 text-sm mb-2">
@@ -34,16 +38,40 @@
         </div>
       </div>
 
-      <div id="game-canvas" class="game-canvas mx-auto" style="width: 800px; height: 600px">
+      <div
+        id="game-canvas"
+        class="game-canvas mx-auto"
+        style="width: 800px; height: 600px"
+      >
         <div class="overlay">
           <!-- Characters -->
-          <img id="fireboy" src="./src/images/vico_sotto.png" class="character fireboy" 
-               onerror="this.style.display='none'; document.getElementById('fireboy-fallback').style.display='flex';" />
-          <div id="fireboy-fallback" class="character fireboy fireboy-fallback character-fallback" style="display: none;">🔥</div>
-          
-          <img id="watergirl" src="./src/images/risa_hontiveros.png" class="character watergirl"
-               onerror="this.style.display='none'; document.getElementById('watergirl-fallback').style.display='flex';" />
-          <div id="watergirl-fallback" class="character watergirl watergirl-fallback character-fallback" style="display: none;">💧</div>
+          <img
+            id="fireboy"
+            src="./src/images/vico_sotto.png"
+            class="character fireboy"
+            onerror="this.style.display='none'; document.getElementById('fireboy-fallback').style.display='flex';"
+          />
+          <div
+            id="fireboy-fallback"
+            class="character fireboy fireboy-fallback character-fallback"
+            style="display: none"
+          >
+            🔥
+          </div>
+
+          <img
+            id="watergirl"
+            src="./src/images/risa_hontiveros.png"
+            class="character watergirl"
+            onerror="this.style.display='none'; document.getElementById('watergirl-fallback').style.display='flex';"
+          />
+          <div
+            id="watergirl-fallback"
+            class="character watergirl watergirl-fallback character-fallback"
+            style="display: none"
+          >
+            💧
+          </div>
 
           <!-- Flood -->
           <div id="flood" class="flood" style="height: 0px"></div>
@@ -52,57 +80,99 @@
       </div>
 
       <div class="text-center mt-4">
-        <div id="game-status" class="text-lg font-bold mb-2 text-yellow-300"></div>
-        <button id="restart-btn" class="btn-primary px-6 py-2 rounded-lg font-bold">
+        <div
+          id="game-status"
+          class="text-lg font-bold mb-2 text-yellow-300"
+        ></div>
+        <button
+          id="restart-btn"
+          class="btn-primary px-6 py-2 rounded-lg font-bold"
+        >
           Restart Level
         </button>
       </div>
     </div>
 
     <!-- Start Modal -->
-    <div id="start-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50">
+    <div
+      id="start-modal"
+      class="fixed inset-0 modal-overlay flex items-center justify-center z-50"
+    >
       <div class="max-w-2xl text-center p-8 modal-content rounded-2xl">
-        <h2 class="text-3xl font-bold text-yellow-400 mb-4">🎮 FloodQuest: The Truth Unleashed</h2>
+        <h2 class="text-3xl font-bold text-yellow-400 mb-4">
+          🎮 FloodQuest: The Truth Unleashed
+        </h2>
         <p class="text-gray-200 mb-4 leading-relaxed">
-          Mayor Vico Sotto has uncovered a conspiracy! Ghost projects, blocked drains, and fake dams 
-          are causing catastrophic flooding.
+          Mayor Vico Sotto has uncovered a conspiracy! Ghost projects, blocked
+          drains, and fake dams are causing catastrophic flooding.
         </p>
         <p class="text-gray-300 mb-4 leading-relaxed">
-          Work together as 💡 <span class="text-yellow-300 font-bold">Vico Sotto (Fireboy)</span> and 🌊 
-          <span class="text-blue-400 font-bold">Risa Hontiveros (Watergirl)</span> to expose corruption!
+          Work together as 💡
+          <span class="text-yellow-300 font-bold">Vico Sotto (Fireboy)</span>
+          and 🌊
+          <span class="text-blue-400 font-bold"
+            >Risa Hontiveros (Watergirl)</span
+          >
+          to expose corruption!
         </p>
         <p class="text-gray-100 font-bold mb-6">
-          Mission: Collect Truth Gems, expose all corruption, and escape together through 5 challenging levels!
+          Mission: Collect Truth Gems, expose all corruption, and escape
+          together through 5 challenging levels!
         </p>
-        <button id="start-btn" class="btn-primary px-8 py-3 rounded-lg font-bold text-white">
+        <button
+          id="start-btn"
+          class="btn-primary px-8 py-3 rounded-lg font-bold text-white"
+        >
           Start the Investigation
         </button>
       </div>
     </div>
 
     <!-- Game Over Modal -->
-    <div id="gameover-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+    <div
+      id="gameover-modal"
+      class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden"
+    >
       <div class="max-w-xl text-center p-8 modal-content rounded-2xl">
         <h2 class="text-3xl font-bold text-red-400 mb-4">🌊 Game Over!</h2>
         <p id="gameover-message" class="text-gray-200 mb-4 leading-relaxed"></p>
-        <div id="flood-fact" class="text-yellow-300 font-semibold italic mb-6 leading-relaxed">
+        <div
+          id="flood-fact"
+          class="text-yellow-300 font-semibold italic mb-6 leading-relaxed"
+        >
           <!-- Fact will be inserted here -->
         </div>
-        <button id="restart-modal-btn" class="btn-success px-6 py-3 rounded-lg font-bold text-white">
+        <button
+          id="restart-modal-btn"
+          class="btn-success px-6 py-3 rounded-lg font-bold text-white"
+        >
           Try Again
         </button>
       </div>
     </div>
 
     <!-- Win Modal -->
-    <div id="win-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+    <div
+      id="win-modal"
+      class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden"
+    >
       <div class="max-w-xl text-center p-8 modal-content rounded-2xl">
-        <h2 class="text-3xl font-bold text-green-400 mb-4">🎉 Level Complete!</h2>
-        <p id="win-message" class="text-gray-200 mb-4 leading-relaxed">Level Complete! Well done!</p>
-        <div id="win-extra" class="text-blue-300 font-semibold italic mb-6 leading-relaxed">
+        <h2 class="text-3xl font-bold text-green-400 mb-4">
+          🎉 Level Complete!
+        </h2>
+        <p id="win-message" class="text-gray-200 mb-4 leading-relaxed">
+          Level Complete! Well done!
+        </p>
+        <div
+          id="win-extra"
+          class="text-blue-300 font-semibold italic mb-6 leading-relaxed"
+        >
           ✅ Great teamwork! You escaped the flood this time.
         </div>
-        <button id="win-modal-btn" class="btn-success px-6 py-3 rounded-lg font-bold text-white">
+        <button
+          id="win-modal-btn"
+          class="btn-success px-6 py-3 rounded-lg font-bold text-white"
+        >
           Next ➡️
         </button>
       </div>
