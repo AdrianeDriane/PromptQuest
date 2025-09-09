@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    <!-- Game Over Modal -->
+      <!-- Game Over Modal -->
     <div id="gameover-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
       <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
         <h2 class="text-3xl font-bold text-red-400 mb-4">🌊 Game Over!</h2>
@@ -90,12 +90,30 @@
         <div id="flood-fact" class="text-yellow-300 font-semibold italic mb-6">
           <!-- Fact will be inserted here -->
         </div>
-
         <button id="restart-modal-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold text-white transition">
           Try Again
         </button>
       </div>
     </div>
+
+    <!-- Win Modal -->
+    <div id="win-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+      <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
+        <h2 class="text-3xl font-bold text-green-400 mb-4">🎉 You Win!</h2>
+        <p id="win-message" class="text-gray-200 mb-4">Level Complete! Well done!</p>
+
+        <div id="win-extra" class="text-blue-300 font-semibold italic mb-6">
+          ✅ Great teamwork! You escaped the flood this time.
+        </div>
+
+        <button id="win-restart-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold text-white transition">
+          Play Again
+        </button>
+      </div>
+    </div>
+
+  </div>
+
 
     <script src="src/game.js"></script>
   </body>

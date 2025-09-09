@@ -291,9 +291,28 @@ class Game {
       watergirlAtDoor &&
       this.gems.collected >= this.gems.total
     ) {
-      this.gameOver("Level Complete! Well done!");
+      this.winGame(); // ✅ Use win modal
     }
   }
+
+
+  winGame() {
+  this.gameRunning = false;
+
+  // Show win modal
+  const modal = document.getElementById("win-modal");
+  document.getElementById("gameover-message").textContent = "✅ Level Complete! Well done!";
+  document.getElementById("gameover-message").style.color = "green"; // green text
+  document.getElementById("flood-fact").textContent = "🎉 Great teamwork! You escaped the flood this time.";
+  modal.classList.remove("hidden");
+
+  // Restart button
+  document.getElementById("win-restart-btn").onclick = () => {
+    modal.classList.add("hidden");
+    this.restart();
+  };
+}
+
 
   gameOver(message) {
     this.gameRunning = false;
