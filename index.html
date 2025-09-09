@@ -5,117 +5,1021 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fireboy & Watergirl: Rising Flood</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="src/styles.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+      
+      body {
+        font-family: 'Press Start 2P', cursive;
+      }
+
+      .game-canvas {
+        background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+        position: relative;
+        overflow: hidden;
+        background-image: url('./src/images/background_1.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border: 4px solid #8B4513;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      }
+
+      #game-canvas .overlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+
+      .character {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        transition: all 0.1s ease;
+        z-index: 10;
+        object-fit: contain;
+        transform: translateY(-16px);
+        border-radius: 8px;
+        border: 3px solid;
+      }
+
+      .fireboy {
+        border-color: #ff5722;
+        box-shadow: 0 0 20px rgba(255, 87, 34, 0.8);
+      }
+
+      .watergirl {
+        border-color: #2196f3;
+        box-shadow: 0 0 20px rgba(33, 150, 243, 0.8);
+      }
+
+      .platform {
+        position: absolute;
+        background-color: #8d6e63;
+        border-top: 3px solid #5d4037;
+        border-left: 2px solid #5d4037;
+        border-right: 2px solid #5d4037;
+        box-shadow: 
+          inset 0 2px 0 #a1887f,
+          inset 0 -2px 0 #5d4037;
+        image-rendering: pixelated;
+      }
+
+      .lava-pool {
+        position: absolute;
+        background: linear-gradient(45deg, #ff5722, #d32f2f);
+        border-radius: 8px;
+        animation: lava-glow 2s ease-in-out infinite alternate;
+      }
+
+      .water-pool {
+        position: absolute;
+        background: linear-gradient(45deg, #2196f3, #0d47a1);
+        border-radius: 8px;
+        animation: water-glow 2s ease-in-out infinite alternate;
+      }
+
+      .poison-pool {
+        position: absolute;
+        background: linear-gradient(45deg, #4caf50, #1b5e20);
+        border-radius: 8px;
+        animation: poison-glow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes lava-glow {
+        0% { box-shadow: 0 0 20px rgba(255, 87, 34, 0.8); }
+        100% { box-shadow: 0 0 40px rgba(255, 87, 34, 1); }
+      }
+
+      @keyframes water-glow {
+        0% { box-shadow: 0 0 20px rgba(33, 150, 243, 0.8); }
+        100% { box-shadow: 0 0 40px rgba(33, 150, 243, 1); }
+      }
+
+      @keyframes poison-glow {
+        0% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
+        100% { box-shadow: 0 0 40px rgba(76, 175, 80, 1); }
+      }
+
+      .door {
+        position: absolute;
+        width: 40px;
+        height: 60px;
+        border-radius: 20px 20px 0 0;
+        border: 3px solid;
+      }
+
+      .fire-door {
+        background: linear-gradient(180deg, #ff8a65, #d32f2f);
+        border-color: #ff5722;
+        box-shadow: 0 0 30px rgba(255, 87, 34, 0.8);
+      }
+
+      .water-door {
+        background: linear-gradient(180deg, #64b5f6, #1976d2);
+        border-color: #2196f3;
+        box-shadow: 0 0 30px rgba(33, 150, 243, 0.8);
+      }
+
+      .flood {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(
+          0deg,
+          #0d47a1 0%,
+          #1976d2 50%,
+          rgba(25, 118, 210, 0.3) 100%
+        );
+        transition: height 0.5s ease;
+        z-index: 5;
+        animation: wave 3s ease-in-out infinite;
+      }
+
+      @keyframes wave {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+      }
+
+      .gem {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        z-index: 8;
+        animation: sparkle 1.5s ease-in-out infinite alternate;
+      }
+
+      .fire-gem {
+        background: radial-gradient(circle, #ffeb3b, #ff5722);
+        box-shadow: 0 0 15px rgba(255, 235, 59, 0.8);
+      }
+
+      .water-gem {
+        background: radial-gradient(circle, #e1f5fe, #2196f3);
+        box-shadow: 0 0 15px rgba(225, 245, 254, 0.8);
+      }
+
+      @keyframes sparkle {
+        0% { transform: scale(1) rotate(0deg); }
+        100% { transform: scale(1.2) rotate(180deg); }
+      }
+
+      .level-indicator {
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        color: #1a1a1a;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-weight: bold;
+        border: 2px solid #ffa000;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      }
+
+      .modal-overlay {
+        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.9);
+      }
+
+      .modal-content {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border: 2px solid #475569;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(45deg, #2563eb, #1e40af);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #10b981, #047857);
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(45deg, #059669, #065f46);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      }
+
+      /* Fallback character styles if images don't load */
+      .character-fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .fireboy-fallback {
+        background: radial-gradient(circle, #ff8a65, #d32f2f);
+        color: #fff;
+      }
+
+      .watergirl-fallback {
+        background: radial-gradient(circle, #64b5f6, #1976d2);
+        color: #fff;
+      }
+    </style>
   </head>
-  <body class="bg-gray-900 text-white">
+  <body class="bg-gray-900 text-white min-h-screen">
     <div class="container mx-auto px-4 py-8">
       <div class="text-center mb-4">
-        <h1
-          class="text-4xl font-bold mb-2 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent"
-        >
+        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
           Fireboy & Watergirl: Rising Flood
         </h1>
         <div class="flex justify-center gap-8 mb-4">
           <div class="text-red-400">
-            <span class="font-bold">Fireboy:</span> WASD to move
+            <span class="font-bold">🔥 Vico (Fireboy):</span> WASD to move
           </div>
           <div class="text-blue-400">
-            <span class="font-bold">Watergirl:</span> Arrow keys to move
+            <span class="font-bold">💧 Risa (Watergirl):</span> Arrow keys to move
           </div>
         </div>
-        <div class="flex justify-center gap-4 text-sm">
-          <div>Level: <span id="level" class="font-bold">1</span></div>
-          <div>Gems: <span id="gems" class="font-bold">0/4</span></div>
-          <div>
-            Flood Height: <span id="flood-height" class="font-bold">0%</span>
+        <div class="flex justify-center gap-6 text-sm mb-2">
+          <div class="level-indicator">
+            Level: <span id="level" class="font-bold">1</span>/5
+          </div>
+          <div class="bg-green-600 px-3 py-2 rounded-lg">
+            Gems: <span id="gems" class="font-bold">0/4</span>
+          </div>
+          <div class="bg-red-600 px-3 py-2 rounded-lg">
+            Flood: <span id="flood-height" class="font-bold">0%</span>
           </div>
         </div>
       </div>
 
-      <div
-        id="game-canvas"
-        class="game-canvas mx-auto"
-        style="width: 800px; height: 600px"
-      >
+      <div id="game-canvas" class="game-canvas mx-auto" style="width: 800px; height: 600px">
         <div class="overlay">
           <!-- Characters -->
-          <img id="fireboy" src="./src/images/vico_sotto.png" class="character fireboy"></img>
-          <img id="watergirl" src="./src/images/risa_hontiveros.png" class="character watergirl"></img>
+          <img id="fireboy" src="./src/images/vico_sotto.png" class="character fireboy" 
+               onerror="this.style.display='none'; document.getElementById('fireboy-fallback').style.display='flex';" />
+          <div id="fireboy-fallback" class="character fireboy fireboy-fallback character-fallback" style="display: none;">🔥</div>
+          
+          <img id="watergirl" src="./src/images/risa_hontiveros.png" class="character watergirl"
+               onerror="this.style.display='none'; document.getElementById('watergirl-fallback').style.display='flex';" />
+          <div id="watergirl-fallback" class="character watergirl watergirl-fallback character-fallback" style="display: none;">💧</div>
 
           <!-- Flood -->
           <div id="flood" class="flood" style="height: 0px"></div>
-
           <!-- Game objects will be dynamically added here -->
-         </div>
+        </div>
       </div>
 
       <div class="text-center mt-4">
-        <div id="game-status" class="text-lg font-bold mb-2"></div>
-        <button
-          id="restart-btn"
-          class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-bold transition-colors"
-        >
+        <div id="game-status" class="text-lg font-bold mb-2 text-yellow-300"></div>
+        <button id="restart-btn" class="btn-primary px-6 py-2 rounded-lg font-bold">
           Restart Level
         </button>
       </div>
     </div>
 
-    <!-- Start Modal HTML (standalone) -->
-    <div id="start-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
-      <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
+    <!-- Start Modal -->
+    <div id="start-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50">
+      <div class="max-w-2xl text-center p-8 modal-content rounded-2xl">
         <h2 class="text-3xl font-bold text-yellow-400 mb-4">🎮 FloodQuest: The Truth Unleashed</h2>
-        <p class="text-gray-200 mb-4">
+        <p class="text-gray-200 mb-4 leading-relaxed">
           Mayor Vico Sotto has uncovered a conspiracy! Ghost projects, blocked drains, and fake dams 
           are causing catastrophic flooding.
         </p>
-        <p class="text-gray-300 mb-4">
-          Work together as 💡 <span class="text-yellow-300 font-bold">Vico</span> and the 🌊 
-          <span class="text-blue-400 font-bold">Flood Spirit</span> to expose corruption!
+        <p class="text-gray-300 mb-4 leading-relaxed">
+          Work together as 💡 <span class="text-yellow-300 font-bold">Vico Sotto (Fireboy)</span> and 🌊 
+          <span class="text-blue-400 font-bold">Risa Hontiveros (Watergirl)</span> to expose corruption!
         </p>
         <p class="text-gray-100 font-bold mb-6">
-          Mission: Collect Truth Gems, expose all corruption, and escape together!
+          Mission: Collect Truth Gems, expose all corruption, and escape together through 5 challenging levels!
         </p>
-        <button id="start-btn" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold text-white transition">
+        <button id="start-btn" class="btn-primary px-8 py-3 rounded-lg font-bold text-white">
           Start the Investigation
         </button>
       </div>
     </div>
 
-      <!-- Game Over Modal -->
-    <div id="gameover-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
-      <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
+    <!-- Game Over Modal -->
+    <div id="gameover-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+      <div class="max-w-xl text-center p-8 modal-content rounded-2xl">
         <h2 class="text-3xl font-bold text-red-400 mb-4">🌊 Game Over!</h2>
-        <p id="gameover-message" class="text-gray-200 mb-4"></p>
-        
-        <div id="flood-fact" class="text-yellow-300 font-semibold italic mb-6">
+        <p id="gameover-message" class="text-gray-200 mb-4 leading-relaxed"></p>
+        <div id="flood-fact" class="text-yellow-300 font-semibold italic mb-6 leading-relaxed">
           <!-- Fact will be inserted here -->
         </div>
-        <button id="restart-modal-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold text-white transition">
+        <button id="restart-modal-btn" class="btn-success px-6 py-3 rounded-lg font-bold text-white">
           Try Again
         </button>
       </div>
     </div>
-    
-    <!-- Win Modal -->
-    <div id="win-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
-      <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
-        <h2 class="text-3xl font-bold text-green-400 mb-4">🎉 You Win!</h2>
-        <p id="win-message" class="text-gray-200 mb-4">Level Complete! Well done!</p>
 
-        <div id="win-extra" class="text-blue-300 font-semibold italic mb-6">
+    <!-- Win Modal -->
+    <div id="win-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+      <div class="max-w-xl text-center p-8 modal-content rounded-2xl">
+        <h2 class="text-3xl font-bold text-green-400 mb-4">🎉 Level Complete!</h2>
+        <p id="win-message" class="text-gray-200 mb-4 leading-relaxed">Level Complete! Well done!</p>
+        <div id="win-extra" class="text-blue-300 font-semibold italic mb-6 leading-relaxed">
           ✅ Great teamwork! You escaped the flood this time.
         </div>
-
-        <button id="win-modal-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold text-white transition">
+        <button id="win-modal-btn" class="btn-success px-6 py-3 rounded-lg font-bold text-white">
           Next ➡️
         </button>
       </div>
     </div>
 
+    <script>
+      const floodFacts = [
+        "❗ Many drainage systems in cities are clogged with trash, worsening floods.",
+        "🏗️ Ghost infrastructure projects waste money that should protect communities.",
+        "🌊 Improper dam construction and corruption can increase flood risks.",
+        "♻️ Planting trees and restoring rivers can reduce flooding impact.",
+        "🚧 Poor urban planning often leads to blocked waterways and heavier floods.",
+        "🏙️ Concrete surfaces prevent water absorption, increasing flood severity.",
+        "🌳 Deforestation removes natural flood barriers and water absorption.",
+        "💰 Corruption in flood control projects puts communities at greater risk.",
+      ];
 
-  </div>
+      const levelDescriptions = [
+        "🎓 Tutorial: Learn the basics of teamwork and gem collection!",
+        "🚧 Separation: Characters must take different paths to succeed!",
+        "⛰️ Vertical Challenge: Master jumping and precise platforming!",
+        "🌀 The Maze: Navigate complex paths and avoid deadly traps!",
+        "💀 Final Trial: Fast flood, narrow platforms, perfect timing required!"
+      ];
 
+      class Game {
+        constructor() {
+          this.canvas = document.getElementById("game-canvas");
+          this.fireboy = document.getElementById("fireboy");
+          this.watergirl = document.getElementById("watergirl");
+          this.fireboyFallback = document.getElementById("fireboy-fallback");
+          this.watergirlFallback = document.getElementById("watergirl-fallback");
+          this.flood = document.getElementById("flood");
 
-    <script src="src/game.js"></script>
+          this.level = 1;
+          this.maxLevel = 5;
+          this.gems = { collected: 0, total: 4 };
+          this.floodHeight = 0;
+          this.floodRiseSpeed = 0.5;
+          this.gameRunning = true;
+
+          this.characters = {
+            fireboy: {
+              x: 50,
+              y: 520,
+              width: 32,
+              height: 32,
+              onGround: false,
+              velY: 0,
+            },
+            watergirl: {
+              x: 100,
+              y: 520,
+              width: 32,
+              height: 32,
+              onGround: false,
+              velY: 0,
+            },
+          };
+
+          this.keys = {};
+          this.gravity = 0.8;
+          this.jumpPower = 15;
+          this.moveSpeed = 5;
+
+          this.platforms = [];
+          this.pools = [];
+          this.doors = [];
+          this.gameGems = [];
+
+          this.init();
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.createLevel();
+          this.gameLoop();
+          this.floodTimer();
+        }
+
+        setupEventListeners() {
+          document.addEventListener("keydown", (e) => {
+            this.keys[e.key.toLowerCase()] = true;
+          });
+
+          document.addEventListener("keyup", (e) => {
+            this.keys[e.key.toLowerCase()] = false;
+          });
+
+          document.getElementById("restart-btn").addEventListener("click", () => {
+            this.restart();
+          });
+        }
+
+        createLevel() {
+          this.clearLevel();
+          this.setLevelParameters();
+          
+          switch(this.level) {
+            case 1:
+              this.createLevel1();
+              break;
+            case 2:
+              this.createLevel2();
+              break;
+            case 3:
+              this.createLevel3();
+              break;
+            case 4:
+              this.createLevel4();
+              break;
+            case 5:
+              this.createLevel5();
+              break;
+            default:
+              this.createLevel1();
+          }
+        }
+
+        setLevelParameters() {
+          switch(this.level) {
+            case 1:
+              this.floodRiseSpeed = 0.3;
+              this.gems.total = 4;
+              break;
+            case 2:
+              this.floodRiseSpeed = 0.5;
+              this.gems.total = 6;
+              break;
+            case 3:
+              this.floodRiseSpeed = 0.7;
+              this.gems.total = 8;
+              break;
+            case 4:
+              this.floodRiseSpeed = 0.9;
+              this.gems.total = 10;
+              break;
+            case 5:
+              this.floodRiseSpeed = 1.2;
+              this.gems.total = 12;
+              break;
+          }
+        }
+
+        createLevel1() {
+          // Level 1: Tutorial - Simple layout
+          this.createPlatform(0, 580, 800, 20); // Ground
+          this.createPlatform(200, 480, 150, 20);
+          this.createPlatform(450, 380, 150, 20);
+          this.createPlatform(300, 250, 200, 20);
+          
+          // Simple hazards
+          this.createPool("lava", 160, 560, 80, 20);
+          this.createPool("water", 350, 560, 80, 20);
+          
+          // Doors close together
+          this.createDoor("fire", 480, 190);
+          this.createDoor("water", 520, 190);
+          
+          // Easy gem placement
+          this.createGem("fire", 250, 450);
+          this.createGem("water", 500, 350);
+          this.createGem("fire", 350, 220);
+          this.createGem("water", 450, 220);
+        }
+
+        createLevel2() {
+          // Level 2: Separation - Characters must take different paths
+          this.createPlatform(0, 580, 800, 20); // Ground
+          this.createPlatform(100, 500, 100, 20);
+          this.createPlatform(300, 450, 100, 20);
+          this.createPlatform(500, 400, 100, 20);
+          this.createPlatform(700, 350, 100, 20);
+          this.createPlatform(150, 350, 100, 20);
+          this.createPlatform(350, 250, 100, 20);
+          this.createPlatform(550, 200, 100, 20);
+          
+          // More hazards
+          this.createPool("lava", 200, 560, 100, 20);
+          this.createPool("water", 400, 560, 100, 20);
+          this.createPool("poison", 600, 560, 80, 20);
+          this.createPool("lava", 250, 430, 60, 20);
+          this.createPool("water", 450, 380, 60, 20);
+          
+          // Doors separated
+          this.createDoor("fire", 580, 140);
+          this.createDoor("water", 620, 140);
+          
+          // More gems, requiring teamwork
+          this.createGem("fire", 150, 470);
+          this.createGem("water", 350, 420);
+          this.createGem("fire", 530, 370);
+          this.createGem("water", 730, 320);
+          this.createGem("fire", 380, 220);
+          this.createGem("water", 580, 170);
+        }
+
+        createLevel3() {
+          // Level 3: Vertical Challenge - More jumping required
+          this.createPlatform(0, 580, 800, 20); // Ground
+          this.createPlatform(50, 520, 80, 20);
+          this.createPlatform(200, 460, 80, 20);
+          this.createPlatform(350, 400, 80, 20);
+          this.createPlatform(500, 340, 80, 20);
+          this.createPlatform(650, 280, 80, 20);
+          this.createPlatform(100, 380, 60, 20);
+          this.createPlatform(250, 320, 60, 20);
+          this.createPlatform(400, 260, 60, 20);
+          this.createPlatform(550, 200, 60, 20);
+          this.createPlatform(300, 150, 200, 20);
+          
+          // Strategic hazard placement
+          this.createPool("lava", 130, 560, 70, 20);
+          this.createPool("water", 280, 560, 70, 20);
+          this.createPool("poison", 430, 560, 70, 20);
+          this.createPool("lava", 580, 560, 70, 20);
+          this.createPool("water", 130, 500, 60, 20);
+          this.createPool("lava", 300, 440, 60, 20);
+          this.createPool("poison", 480, 320, 60, 20);
+          
+          this.createDoor("fire", 380, 90);
+          this.createDoor("water", 420, 90);
+          
+          // Challenging gem positions
+          this.createGem("fire", 80, 490);
+          this.createGem("water", 230, 430);
+          this.createGem("fire", 380, 370);
+          this.createGem("water", 530, 310);
+          this.createGem("fire", 680, 250);
+          this.createGem("water", 130, 350);
+          this.createGem("fire", 280, 290);
+          this.createGem("water", 430, 230);
+        }
+
+        createLevel4() {
+          // Level 4: Maze-like - Complex navigation
+          this.createPlatform(0, 580, 800, 20); // Ground
+          // Left side path
+          this.createPlatform(50, 520, 60, 20);
+          this.createPlatform(150, 460, 60, 20);
+          this.createPlatform(50, 400, 60, 20);
+          this.createPlatform(150, 340, 60, 20);
+          this.createPlatform(50, 280, 60, 20);
+          this.createPlatform(150, 220, 60, 20);
+          
+          // Middle obstacles
+          this.createPlatform(300, 500, 60, 20);
+          this.createPlatform(400, 450, 60, 20);
+          this.createPlatform(300, 400, 60, 20);
+          this.createPlatform(400, 350, 60, 20);
+          this.createPlatform(300, 300, 60, 20);
+          this.createPlatform(400, 250, 60, 20);
+          
+          // Right side path
+          this.createPlatform(600, 480, 60, 20);
+          this.createPlatform(700, 420, 60, 20);
+          this.createPlatform(600, 360, 60, 20);
+          this.createPlatform(700, 300, 60, 20);
+          this.createPlatform(600, 240, 60, 20);
+          this.createPlatform(700, 180, 60, 20);
+          
+          // Top platform
+          this.createPlatform(250, 150, 300, 20);
+          
+          // Many hazards
+          this.createPool("lava", 110, 560, 40, 20);
+          this.createPool("water", 210, 560, 40, 20);
+          this.createPool("poison", 360, 560, 40, 20);
+          this.createPool("lava", 460, 560, 40, 20);
+          this.createPool("water", 560, 560, 40, 20);
+          this.createPool("poison", 110, 500, 40, 20);
+          this.createPool("lava", 210, 440, 40, 20);
+          this.createPool("water", 360, 480, 40, 20);
+          this.createPool("poison", 460, 430, 40, 20);
+          this.createPool("lava", 660, 460, 40, 20);
+          this.createPool("water", 660, 400, 40, 20);
+          
+          this.createDoor("fire", 350, 90);
+          this.createDoor("water", 400, 90);
+          
+          // Hidden gems requiring exploration
+          this.createGem("fire", 80, 490);
+          this.createGem("water", 180, 430);
+          this.createGem("fire", 80, 370);
+          this.createGem("water", 180, 310);
+          this.createGem("fire", 330, 470);
+          this.createGem("water", 430, 420);
+          this.createGem("fire", 630, 450);
+          this.createGem("water", 730, 390);
+          this.createGem("fire", 630, 330);
+          this.createGem("water", 730, 270);
+        }
+
+        createLevel5() {
+          // Level 5: Final Challenge - Fast flood, precise timing
+          this.createPlatform(0, 580, 800, 20); // Ground
+          
+          // Narrow platforms requiring precise jumps
+          this.createPlatform(80, 520, 40, 20);
+          this.createPlatform(180, 480, 40, 20);
+          this.createPlatform(280, 440, 40, 20);
+          this.createPlatform(380, 400, 40, 20);
+          this.createPlatform(480, 360, 40, 20);
+          this.createPlatform(580, 320, 40, 20);
+          this.createPlatform(680, 280, 40, 20);
+          
+          // Alternative path
+          this.createPlatform(120, 460, 40, 20);
+          this.createPlatform(220, 400, 40, 20);
+          this.createPlatform(320, 340, 40, 20);
+          this.createPlatform(420, 280, 40, 20);
+          this.createPlatform(520, 220, 40, 20);
+          this.createPlatform(620, 160, 40, 20);
+          
+          // High platform network
+          this.createPlatform(100, 300, 40, 20);
+          this.createPlatform(200, 260, 40, 20);
+          this.createPlatform(300, 220, 40, 20);
+          this.createPlatform(400, 180, 40, 20);
+          this.createPlatform(500, 140, 40, 20);
+          this.createPlatform(600, 100, 40, 20);
+          
+          // Final platform
+          this.createPlatform(350, 80, 100, 20);
+          
+          // Maximum hazards
+          this.createPool("lava", 120, 560, 30, 20);
+          this.createPool("water", 160, 560, 30, 20);
+          this.createPool("poison", 200, 560, 30, 20);
+          this.createPool("lava", 240, 560, 30, 20);
+          this.createPool("poison", 320, 560, 30, 20);
+          this.createPool("lava", 360, 560, 30, 20);
+          this.createPool("water", 400, 560, 30, 20);
+          this.createPool("poison", 440, 560, 30, 20);
+          this.createPool("lava", 480, 560, 30, 20);
+          this.createPool("water", 520, 560, 30, 20);
+          this.createPool("poison", 560, 560, 30, 20);
+          this.createPool("lava", 600, 560, 30, 20);
+          this.createPool("water", 640, 560, 30, 20);
+          this.createPool("poison", 680, 560, 30, 20);
+          
+          this.createDoor("fire", 370, 20);
+          this.createDoor("water", 410, 20);
+          
+          // Gems requiring perfect coordination
+          this.createGem("fire", 100, 490);
+          this.createGem("water", 200, 450);
+          this.createGem("fire", 300, 410);
+          this.createGem("water", 400, 370);
+          this.createGem("fire", 500, 330);
+          this.createGem("water", 600, 290);
+          this.createGem("fire", 130, 280);
+          this.createGem("water", 230, 230);
+          this.createGem("fire", 330, 190);
+          this.createGem("water", 430, 150);
+          this.createGem("fire", 530, 110);
+          this.createGem("water", 630, 70);
+        }
+
+        createPlatform(x, y, width, height) {
+          const platform = document.createElement("div");
+          platform.className = "platform";
+          platform.style.left = x + "px";
+          platform.style.top = y + "px";
+          platform.style.width = width + "px";
+          platform.style.height = height + "px";
+          this.canvas.querySelector('.overlay').appendChild(platform);
+
+          this.platforms.push({ x, y, width, height, element: platform });
+        }
+
+        createPool(type, x, y, width, height) {
+          const pool = document.createElement("div");
+          pool.className = `${type}-pool`;
+          pool.style.left = x + "px";
+          pool.style.top = y + "px";
+          pool.style.width = width + "px";
+          pool.style.height = height + "px";
+          this.canvas.querySelector('.overlay').appendChild(pool);
+
+          this.pools.push({ type, x, y, width, height, element: pool });
+        }
+
+        createDoor(type, x, y) {
+          const door = document.createElement("div");
+          door.className = `door ${type}-door`;
+          door.style.left = x + "px";
+          door.style.top = y + "px";
+          this.canvas.querySelector('.overlay').appendChild(door);
+
+          this.doors.push({ type, x, y, width: 40, height: 60, element: door });
+        }
+
+        createGem(type, x, y) {
+          const gem = document.createElement("div");
+          gem.className = `gem ${type}-gem`;
+          gem.style.left = x + "px";
+          gem.style.top = y + "px";
+          this.canvas.querySelector('.overlay').appendChild(gem);
+
+          this.gameGems.push({
+            type,
+            x,
+            y,
+            width: 20,
+            height: 20,
+            element: gem,
+            collected: false,
+          });
+        }
+
+        clearLevel() {
+          const elements = this.canvas.querySelectorAll(
+            ".platform, .lava-pool, .water-pool, .poison-pool, .door, .gem"
+          );
+          elements.forEach((el) => el.remove());
+
+          this.platforms = [];
+          this.pools = [];
+          this.doors = [];
+          this.gameGems = [];
+        }
+
+        updateCharacter(char, charName) {
+          // Handle input
+          if (charName === "fireboy") {
+            if (this.keys["a"]) char.x -= this.moveSpeed;
+            if (this.keys["d"]) char.x += this.moveSpeed;
+            if (this.keys["w"] && char.onGround) {
+              char.velY = -this.jumpPower;
+              char.onGround = false;
+            }
+          } else if (charName === "watergirl") {
+            if (this.keys["arrowleft"]) char.x -= this.moveSpeed;
+            if (this.keys["arrowright"]) char.x += this.moveSpeed;
+            if (this.keys["arrowup"] && char.onGround) {
+              char.velY = -this.jumpPower;
+              char.onGround = false;
+            }
+          }
+
+          // Apply gravity
+          if (!char.onGround) {
+            char.velY += this.gravity;
+          }
+          char.y += char.velY;
+
+          // Boundary checks
+          char.x = Math.max(0, Math.min(char.x, 800 - char.width));
+
+          // Platform collision
+          char.onGround = false;
+          for (let platform of this.platforms) {
+            if (this.checkCollision(char, platform)) {
+              if (char.velY > 0 && char.y < platform.y) {
+                char.y = platform.y - char.height;
+                char.velY = 0;
+                char.onGround = true;
+              }
+            }
+          }
+
+          // Pool collision
+          for (let pool of this.pools) {
+            if (this.checkCollision(char, pool)) {
+              if (
+                (pool.type === "lava" && charName === "watergirl") ||
+                (pool.type === "water" && charName === "fireboy") ||
+                pool.type === "poison"
+              ) {
+                this.gameOver("Game Over! Character touched deadly element!");
+                return;
+              }
+            }
+          }
+
+          // Gem collection
+          for (let gem of this.gameGems) {
+            if (!gem.collected && this.checkCollision(char, gem)) {
+              if (
+                (gem.type === "fire" && charName === "fireboy") ||
+                (gem.type === "water" && charName === "watergirl")
+              ) {
+                gem.collected = true;
+                gem.element.style.display = "none";
+                this.gems.collected++;
+                this.updateUI();
+              }
+            }
+          }
+
+          // Flood collision
+          if (char.y + char.height > 600 - this.floodHeight) {
+            this.gameOver("Game Over! Caught by the flood!");
+            return;
+          }
+
+          // Door collision (win condition)
+          for (let door of this.doors) {
+            if (this.checkCollision(char, door)) {
+              if (
+                (door.type === "fire" && charName === "fireboy") ||
+                (door.type === "water" && charName === "watergirl")
+              ) {
+                this.checkWin();
+              }
+            }
+          }
+        }
+
+        checkCollision(obj1, obj2) {
+          return (
+            obj1.x < obj2.x + obj2.width &&
+            obj1.x + obj1.width > obj2.x &&
+            obj1.y < obj2.y + obj2.height &&
+            obj1.y + obj1.height > obj2.y
+          );
+        }
+
+        checkWin() {
+          // Check if both characters are at their doors and all gems collected
+          let fireboyAtDoor = false;
+          let watergirlAtDoor = false;
+
+          for (let door of this.doors) {
+            if (
+              door.type === "fire" &&
+              this.checkCollision(this.characters.fireboy, door)
+            ) {
+              fireboyAtDoor = true;
+            }
+            if (
+              door.type === "water" &&
+              this.checkCollision(this.characters.watergirl, door)
+            ) {
+              watergirlAtDoor = true;
+            }
+          }
+
+          if (
+            fireboyAtDoor &&
+            watergirlAtDoor &&
+            this.gems.collected >= this.gems.total
+          ) {
+            this.winGame();
+          }
+        }
+
+        winGame() {
+          this.gameRunning = false;
+
+          if (this.level < this.maxLevel) {
+            // Show level complete message
+            const modal = document.getElementById("win-modal");
+            document.getElementById("win-message").textContent = `Level ${this.level} Complete! Well done!`;
+            document.getElementById("win-extra").textContent = `🎉 Great teamwork! Ready for Level ${this.level + 1}?`;
+            modal.classList.remove("hidden");
+
+            // Next level button
+            document.getElementById("win-modal-btn").textContent = "Next Level";
+            document.getElementById("win-modal-btn").onclick = () => {
+              modal.classList.add("hidden");
+              this.nextLevel();
+            };
+          } else {
+            // Game completed
+            const modal = document.getElementById("win-modal");
+            document.getElementById("win-message").textContent = "🏆 Congratulations! You've completed all levels!";
+            document.getElementById("win-extra").textContent = "🌊 You've mastered flood survival and exposed all corruption! Vico and Risa make an unstoppable team!";
+            modal.classList.remove("hidden");
+
+            // Play again button
+            document.getElementById("win-modal-btn").textContent = "Play Again";
+            document.getElementById("win-modal-btn").onclick = () => {
+              modal.classList.add("hidden");
+              this.level = 1;
+              this.restart();
+            };
+          }
+        }
+
+        nextLevel() {
+          this.level++;
+          this.restart();
+        }
+
+        gameOver(message) {
+          this.gameRunning = false;
+
+          // Pick a random fact
+          const randomFact = floodFacts[Math.floor(Math.random() * floodFacts.length)];
+
+          // Show modal
+          const modal = document.getElementById("gameover-modal");
+          document.getElementById("gameover-message").textContent = message;
+          document.getElementById("flood-fact").textContent = randomFact;
+          modal.classList.remove("hidden");
+
+          // Restart button
+          document.getElementById("restart-modal-btn").onclick = () => {
+            modal.classList.add("hidden");
+            this.restart();
+          };
+        }
+
+        updateUI() {
+          document.getElementById("level").textContent = this.level;
+          document.getElementById("gems").textContent = `${this.gems.collected}/${this.gems.total}`;
+          document.getElementById("flood-height").textContent = Math.round((this.floodHeight / 600) * 100) + "%";
+        }
+
+        render() {
+          // Update main character positions
+          this.fireboy.style.left = this.characters.fireboy.x + "px";
+          this.fireboy.style.top = this.characters.fireboy.y + "px";
+          this.fireboyFallback.style.left = this.characters.fireboy.x + "px";
+          this.fireboyFallback.style.top = this.characters.fireboy.y + "px";
+
+          this.watergirl.style.left = this.characters.watergirl.x + "px";
+          this.watergirl.style.top = this.characters.watergirl.y + "px";
+          this.watergirlFallback.style.left = this.characters.watergirl.x + "px";
+          this.watergirlFallback.style.top = this.characters.watergirl.y + "px";
+
+          this.flood.style.height = this.floodHeight + "px";
+        }
+
+        gameLoop() {
+          if (!this.gameRunning) return;
+
+          this.updateCharacter(this.characters.fireboy, "fireboy");
+          this.updateCharacter(this.characters.watergirl, "watergirl");
+          this.render();
+
+          requestAnimationFrame(() => this.gameLoop());
+        }
+
+        floodTimer() {
+          if (!this.gameRunning) return;
+
+          setTimeout(() => {
+            this.floodHeight += this.floodRiseSpeed;
+            this.updateUI();
+
+            // Flood limit increases with level difficulty
+            const maxFloodHeight = 300 + (this.level * 20);
+            if (this.floodHeight < maxFloodHeight) {
+              this.floodTimer();
+            }
+          }, 100);
+        }
+
+        restart() {
+          this.gameRunning = true;
+          this.gems.collected = 0;
+          this.floodHeight = 0;
+
+          this.characters.fireboy = {
+            x: 50,
+            y: 520,
+            width: 32,
+            height: 32,
+            onGround: false,
+            velY: 0,
+          };
+          this.characters.watergirl = {
+            x: 100,
+            y: 520,
+            width: 32,
+            height: 32,
+            onGround: false,
+            velY: 0,
+          };
+
+          document.getElementById("game-status").textContent = levelDescriptions[this.level - 1] || "";
+          this.createLevel();
+          this.updateUI();
+          this.gameLoop();
+          this.floodTimer();
+        }
+      }
+
+      // Initialize the game when page loads
+      window.addEventListener("load", () => {
+        const startModal = document.getElementById("start-modal");
+        const startBtn = document.getElementById("start-btn");
+
+        startBtn.addEventListener("click", () => {
+          startModal.classList.add("hidden");
+          new Game();
+        });
+      });
+    </script>
   </body>
 </html>
