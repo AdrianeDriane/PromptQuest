@@ -260,6 +260,14 @@
 
 
     <script>
+      const floodFacts = [
+        "❗ Many drainage systems in cities are clogged with trash, worsening floods.",
+        "🏗️ Ghost infrastructure projects waste money that should protect communities.",
+        "🌊 Improper dam construction and corruption can increase flood risks.",
+        "♻️ Planting trees and restoring rivers can reduce flooding impact.",
+        "🚧 Poor urban planning often leads to blocked waterways and heavier floods.",
+      ];
+
       class Game {
         constructor() {
           this.canvas = document.getElementById("game-canvas");
@@ -623,6 +631,25 @@
           this.updateUI();
           this.gameLoop();
         }
+        gameOver(message) {
+        this.gameRunning = false;
+
+        // Pick a random fact
+        const randomFact = floodFacts[Math.floor(Math.random() * floodFacts.length)];
+
+        // Show modal
+        const modal = document.getElementById("gameover-modal");
+        document.getElementById("gameover-message").textContent = message;
+        document.getElementById("flood-fact").textContent = randomFact;
+        modal.classList.remove("hidden");
+
+        // Restart button
+        document.getElementById("restart-modal-btn").onclick = () => {
+          modal.classList.add("hidden");
+          this.restart();
+        };
+    }
+
       }
 
       // Start the game
@@ -641,6 +668,25 @@
         });
       });
 
+
+
     </script>
+
+      <!-- Game Over Modal -->
+  <div id="gameover-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+    <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
+      <h2 class="text-3xl font-bold text-red-400 mb-4">🌊 Game Over!</h2>
+      <p id="gameover-message" class="text-gray-200 mb-4"></p>
+      
+      <div id="flood-fact" class="text-yellow-300 font-semibold italic mb-6">
+        <!-- Fact will be inserted here -->
+      </div>
+
+      <button id="restart-modal-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold text-white transition">
+        Try Again
+      </button>
+    </div>
+  </div>
+
   </body>
 </html>
