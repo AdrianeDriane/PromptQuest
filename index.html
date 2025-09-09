@@ -10,8 +10,18 @@
         background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
         position: relative;
         overflow: hidden;
+        background-image: url('./src/images/background_1.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
       }
 
+      #game-canvas .overlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* 0.3 = 30% darkness */
+        position: relative; /* keep children positioned normally */
+      }
       .character {
         position: absolute;
         width: 50px;
@@ -190,14 +200,16 @@
         class="game-canvas mx-auto"
         style="width: 800px; height: 600px"
       >
-        <!-- Characters -->
-        <img id="fireboy" src="./src/images/vico_sotto.png" class="character fireboy"></img>
-        <div id="watergirl" class="character watergirl"></div>
+        <div class="overlay">
+          <!-- Characters -->
+          <img id="fireboy" src="./src/images/vico_sotto.png" class="character fireboy"></img>
+          <div id="watergirl" class="character watergirl"></div>
 
-        <!-- Flood -->
-        <div id="flood" class="flood" style="height: 0px"></div>
+          <!-- Flood -->
+          <div id="flood" class="flood" style="height: 0px"></div>
 
-        <!-- Game objects will be dynamically added here -->
+          <!-- Game objects will be dynamically added here -->
+         </div>
       </div>
 
       <div class="text-center mt-4">
