@@ -12,6 +12,7 @@ const floodFacts = [
       const levelDescriptions = [
         "🎓 Tutorial: Learn the basics of teamwork and gem collection!",
         "🚧 Separation: Characters must take different paths to succeed!",
+        "⛰️ Vertical Challenge: Master jumping and precise platforming!",
         "🌀 The Maze: Navigate complex paths and avoid deadly traps!",
         "💀 Final Trial: Fast flood, narrow platforms, perfect timing required!"
       ];
@@ -21,6 +22,8 @@ const floodFacts = [
           this.canvas = document.getElementById("game-canvas");
           this.fireboy = document.getElementById("fireboy");
           this.watergirl = document.getElementById("watergirl");
+          this.fireboyFallback = document.getElementById("fireboy-fallback");
+          this.watergirlFallback = document.getElementById("watergirl-fallback");
           this.flood = document.getElementById("flood");
 
           this.level = 1;
@@ -165,18 +168,18 @@ const floodFacts = [
           this.createPlatform(150, 350, 100, 20);
           this.createPlatform(350, 250, 100, 20);
           this.createPlatform(550, 200, 100, 20);
-
+          
           // More hazards
           this.createPool("lava", 200, 560, 100, 20);
           this.createPool("water", 400, 560, 100, 20);
           this.createPool("poison", 600, 560, 80, 20);
           this.createPool("lava", 250, 430, 60, 20);
           this.createPool("water", 450, 380, 60, 20);
-
+          
           // Doors separated
           this.createDoor("fire", 580, 140);
           this.createDoor("water", 620, 140);
-
+          
           // More gems, requiring teamwork
           this.createGem("fire", 150, 470);
           this.createGem("water", 350, 420);
@@ -187,7 +190,44 @@ const floodFacts = [
         }
 
         createLevel3() {
-          // Level 3: Maze-like - Complex navigation
+          // Level 3: Vertical Challenge - More jumping required
+          this.createPlatform(0, 580, 800, 20); // Ground
+          this.createPlatform(50, 520, 80, 20);
+          this.createPlatform(200, 460, 80, 20);
+          this.createPlatform(350, 400, 80, 20);
+          this.createPlatform(500, 340, 80, 20);
+          this.createPlatform(650, 280, 80, 20);
+          this.createPlatform(100, 380, 60, 20);
+          this.createPlatform(250, 320, 60, 20);
+          this.createPlatform(400, 260, 60, 20);
+          this.createPlatform(550, 200, 60, 20);
+          this.createPlatform(300, 150, 200, 20);
+          
+          // Strategic hazard placement
+          // this.createPool("lava", 130, 560, 70, 20);
+          this.createPool("water", 280, 560, 70, 20);
+          this.createPool("poison", 430, 560, 70, 20);
+          this.createPool("lava", 580, 560, 70, 20);
+          this.createPool("water", 130, 500, 60, 20);
+          this.createPool("lava", 300, 440, 60, 20);
+          // this.createPool("poison", 480, 320, 60, 20);
+          
+          this.createDoor("fire", 380, 90);
+          this.createDoor("water", 420, 90);
+          
+          // Challenging gem positions
+          this.createGem("fire", 80, 490);
+          this.createGem("water", 230, 430);
+          this.createGem("fire", 380, 370);
+          this.createGem("water", 530, 310);
+          this.createGem("fire", 680, 250);
+          this.createGem("water", 130, 350);
+          this.createGem("fire", 280, 290);
+          this.createGem("water", 430, 230);
+        }
+
+        createLevel4() {
+          // Level 4: Maze-like - Complex navigation
           this.createPlatform(0, 580, 800, 20); // Ground
           // Left side path
           this.createPlatform(50, 520, 60, 20);
@@ -217,7 +257,7 @@ const floodFacts = [
           this.createPlatform(250, 150, 300, 20);
           
           // Many hazards
-          this.createPool("lava", 120, 560, 40, 20);
+          // this.createPool("lava", 110, 560, 40, 20);
           this.createPool("water", 210, 560, 40, 20);
           this.createPool("poison", 360, 560, 40, 20);
           this.createPool("lava", 460, 560, 40, 20);
@@ -245,8 +285,8 @@ const floodFacts = [
           this.createGem("water", 730, 270);
         }
 
-        createLevel4() {
-          // Level 4: Final Challenge - Fast flood, precise timing
+        createLevel5() {
+          // Level 5: Final Challenge - Fast flood, precise timing
           this.createPlatform(0, 580, 800, 20); // Ground
           
           // Narrow platforms requiring precise jumps
@@ -278,11 +318,10 @@ const floodFacts = [
           this.createPlatform(350, 80, 100, 20);
           
           // Maximum hazards
-          this.createPool("lava", 120, 560, 30, 20);
+          // this.createPool("lava", 120, 560, 30, 20);
           this.createPool("water", 160, 560, 30, 20);
           this.createPool("poison", 200, 560, 30, 20);
           this.createPool("lava", 240, 560, 30, 20);
-          this.createPool("water", 280, 560, 30, 20);
           this.createPool("poison", 320, 560, 30, 20);
           this.createPool("lava", 360, 560, 30, 20);
           this.createPool("water", 400, 560, 30, 20);
@@ -512,8 +551,8 @@ const floodFacts = [
             modal.classList.remove("hidden");
 
             // Next level button
-            document.getElementById("win-restart-btn").textContent = "Next Level";
-            document.getElementById("win-restart-btn").onclick = () => {
+            document.getElementById("win-modal-btn").textContent = "Next Level";
+            document.getElementById("win-modal-btn").onclick = () => {
               modal.classList.add("hidden");
               this.nextLevel();
             };
@@ -521,12 +560,12 @@ const floodFacts = [
             // Game completed
             const modal = document.getElementById("win-modal");
             document.getElementById("win-message").textContent = "🏆 Congratulations! You've completed all levels!";
-            document.getElementById("win-extra").textContent = "🌊 You've mastered flood survival and exposed all corruption! Mayor Vico and the Flood Spirit make an unstoppable team!";
+            document.getElementById("win-extra").textContent = "🌊 You've mastered flood survival and exposed all corruption! Vico and Risa make an unstoppable team!";
             modal.classList.remove("hidden");
 
             // Play again button
-            document.getElementById("win-restart-btn").textContent = "Play Again";
-            document.getElementById("win-restart-btn").onclick = () => {
+            document.getElementById("win-modal-btn").textContent = "Play Again";
+            document.getElementById("win-modal-btn").onclick = () => {
               modal.classList.add("hidden");
               this.level = 1;
               this.restart();
@@ -565,11 +604,16 @@ const floodFacts = [
         }
 
         render() {
+          // Update main character positions
           this.fireboy.style.left = this.characters.fireboy.x + "px";
           this.fireboy.style.top = this.characters.fireboy.y + "px";
+          this.fireboyFallback.style.left = this.characters.fireboy.x + "px";
+          this.fireboyFallback.style.top = this.characters.fireboy.y + "px";
 
           this.watergirl.style.left = this.characters.watergirl.x + "px";
           this.watergirl.style.top = this.characters.watergirl.y + "px";
+          this.watergirlFallback.style.left = this.characters.watergirl.x + "px";
+          this.watergirlFallback.style.top = this.characters.watergirl.y + "px";
 
           this.flood.style.height = this.floodHeight + "px";
         }
