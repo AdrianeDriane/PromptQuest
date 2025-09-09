@@ -1,11 +1,23 @@
+// Flood facts for educational content
+const floodFacts = [
+  "❗ Many drainage systems in cities are clogged with trash, worsening floods.",
+  "🏗️ Ghost infrastructure projects waste money that should protect communities.",
+  "🌊 Improper dam construction and corruption can increase flood risks.",
+  "♻️ Planting trees and restoring rivers can reduce flooding impact.",
+  "🚧 Poor urban planning often leads to blocked waterways and heavier floods.",
+];
+
 class Game {
   constructor() {
     this.canvas = document.getElementById("game-canvas");
     this.fireboy = document.getElementById("fireboy");
     this.watergirl = document.getElementById("watergirl");
+    this.flood = document.getElementById("flood");
 
     this.level = 1;
     this.gems = { collected: 0, total: 4 };
+    this.floodHeight = 0;
+    this.floodRiseSpeed = 0.5;
     this.gameRunning = true;
 
     this.characters = {
@@ -44,6 +56,7 @@ class Game {
     this.setupEventListeners();
     this.createLevel();
     this.gameLoop();
+    this.floodTimer();
   }
 
   setupEventListeners() {
@@ -55,9 +68,11 @@ class Game {
       this.keys[e.key.toLowerCase()] = false;
     });
 
-    document.getElementById("restart-btn").addEventListener("click", () => {
-      this.restart();
-    });
+    document
+      .getElementById("restart-btn")
+      .addEventListener("click", () => {
+        this.restart();
+      });
   }
 
   createLevel() {
@@ -182,13 +197,6 @@ class Game {
     // Boundary checks
     char.x = Math.max(0, Math.min(char.x, 800 - char.width));
 
-    // Ground boundary
-    if (char.y > 600 - char.height) {
-      char.y = 600 - char.height;
-      char.velY = 0;
-      char.onGround = true;
-    }
-
     // Platform collision
     char.onGround = false;
     for (let platform of this.platforms) {
@@ -228,6 +236,12 @@ class Game {
           this.updateUI();
         }
       }
+    }
+
+    // Flood collision
+    if (char.y + char.height > 600 - this.floodHeight) {
+      this.gameOver("Game Over! Caught by the flood!");
+      return;
     }
 
     // Door collision (win condition)
@@ -283,7 +297,21 @@ class Game {
 
   gameOver(message) {
     this.gameRunning = false;
-    document.getElementById("game-status").textContent = message;
+
+    // Pick a random fact
+    const randomFact = floodFacts[Math.floor(Math.random() * floodFacts.length)];
+
+    // Show modal
+    const modal = document.getElementById("gameover-modal");
+    document.getElementById("gameover-message").textContent = message;
+    document.getElementById("flood-fact").textContent = randomFact;
+    modal.classList.remove("hidden");
+
+    // Restart button
+    document.getElementById("restart-modal-btn").onclick = () => {
+      modal.classList.add("hidden");
+      this.restart();
+    };
   }
 
   updateUI() {
@@ -291,6 +319,8 @@ class Game {
     document.getElementById(
       "gems"
     ).textContent = `${this.gems.collected}/${this.gems.total}`;
+    document.getElementById("flood-height").textContent =
+      Math.round((this.floodHeight / 600) * 100) + "%";
   }
 
   render() {
@@ -299,6 +329,8 @@ class Game {
 
     this.watergirl.style.left = this.characters.watergirl.x + "px";
     this.watergirl.style.top = this.characters.watergirl.y + "px";
+
+    this.flood.style.height = this.floodHeight + "px";
   }
 
   gameLoop() {
@@ -311,9 +343,24 @@ class Game {
     requestAnimationFrame(() => this.gameLoop());
   }
 
+  floodTimer() {
+    if (!this.gameRunning) return;
+
+    setTimeout(() => {
+      this.floodHeight += this.floodRiseSpeed;
+      this.updateUI();
+
+      if (this.floodHeight < 400) {
+        // Don't flood too high
+        this.floodTimer();
+      }
+    }, 100);
+  }
+
   restart() {
     this.gameRunning = true;
     this.gems.collected = 0;
+    this.floodHeight = 0;
 
     this.characters.fireboy = {
       x: 50,
@@ -336,10 +383,17 @@ class Game {
     this.createLevel();
     this.updateUI();
     this.gameLoop();
+    this.floodTimer();
   }
 }
 
-// Start the game
+// Initialize the game when page loads
 window.addEventListener("load", () => {
-  new Game();
+  const startModal = document.getElementById("start-modal");
+  const startBtn = document.getElementById("start-btn");
+
+  startBtn.addEventListener("click", () => {
+    startModal.classList.add("hidden"); // Hide modal
+    new Game(); // Start game
+  });
 });
