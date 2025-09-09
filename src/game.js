@@ -160,7 +160,7 @@ class Game {
 
   clearLevel() {
     const elements = this.canvas.querySelectorAll(
-      ".platform, .lava-pool, .water-pool, .poison-pool, .door, .gem"
+      ".platform, .lava-pool, .water-pool, .poison-pool, .door, .gem, .flood-svg"
     );
     elements.forEach((el) => el.remove());
 
