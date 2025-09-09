@@ -238,6 +238,27 @@
         </button>
       </div>
     </div>
+    <!-- Start Modal HTML (standalone) -->
+    <div id="start-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+      <div class="max-w-xl text-center p-8 bg-gray-800 rounded-2xl shadow-2xl">
+        <h2 class="text-3xl font-bold text-yellow-400 mb-4">🎮 FloodQuest: The Truth Unleashed</h2>
+        <p class="text-gray-200 mb-4">
+          Mayor Vico Sotto has uncovered a conspiracy! Ghost projects, blocked drains, and fake dams 
+          are causing catastrophic flooding.
+        </p>
+        <p class="text-gray-300 mb-4">
+          Work together as 💡 <span class="text-yellow-300 font-bold">Vico</span> and the 🌊 
+          <span class="text-blue-400 font-bold">Flood Spirit</span> to expose corruption!
+        </p>
+        <p class="text-gray-100 font-bold mb-6">
+          Mission: Collect Truth Gems, expose all corruption, and escape together!
+        </p>
+        <button id="start-btn" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold text-white transition">
+          Start the Investigation
+        </button>
+      </div>
+    </div>
+
 
     <script>
       class Game {
@@ -609,6 +630,18 @@
       window.addEventListener("load", () => {
         new Game();
       });
+
+      // Start the game only after Start button is clicked
+      window.addEventListener("load", () => {
+        const startModal = document.getElementById("start-modal");
+        const startBtn = document.getElementById("start-btn");
+
+        startBtn.addEventListener("click", () => {
+          startModal.classList.add("hidden"); // Hide modal
+          new Game(); // Start game
+        });
+      });
+
     </script>
   </body>
 </html>
