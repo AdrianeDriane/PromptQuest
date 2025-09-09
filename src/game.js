@@ -12,7 +12,6 @@ const floodFacts = [
       const levelDescriptions = [
         "🎓 Tutorial: Learn the basics of teamwork and gem collection!",
         "🚧 Separation: Characters must take different paths to succeed!",
-        "⛰️ Vertical Challenge: Master jumping and precise platforming!",
         "🌀 The Maze: Navigate complex paths and avoid deadly traps!",
         "💀 Final Trial: Fast flood, narrow platforms, perfect timing required!"
       ];
@@ -166,18 +165,18 @@ const floodFacts = [
           this.createPlatform(150, 350, 100, 20);
           this.createPlatform(350, 250, 100, 20);
           this.createPlatform(550, 200, 100, 20);
-          
+
           // More hazards
           this.createPool("lava", 200, 560, 100, 20);
           this.createPool("water", 400, 560, 100, 20);
           this.createPool("poison", 600, 560, 80, 20);
           this.createPool("lava", 250, 430, 60, 20);
           this.createPool("water", 450, 380, 60, 20);
-          
+
           // Doors separated
           this.createDoor("fire", 580, 140);
           this.createDoor("water", 620, 140);
-          
+
           // More gems, requiring teamwork
           this.createGem("fire", 150, 470);
           this.createGem("water", 350, 420);
@@ -188,44 +187,7 @@ const floodFacts = [
         }
 
         createLevel3() {
-          // Level 3: Vertical Challenge - More jumping required
-          this.createPlatform(0, 580, 800, 20); // Ground
-          this.createPlatform(50, 520, 80, 20);
-          this.createPlatform(200, 460, 80, 20);
-          this.createPlatform(350, 400, 80, 20);
-          this.createPlatform(500, 340, 80, 20);
-          this.createPlatform(650, 280, 80, 20);
-          this.createPlatform(100, 380, 60, 20);
-          this.createPlatform(250, 320, 60, 20);
-          this.createPlatform(400, 260, 60, 20);
-          this.createPlatform(550, 200, 60, 20);
-          this.createPlatform(300, 150, 200, 20);
-          
-          // Strategic hazard placement
-          this.createPool("lava", 130, 560, 70, 20);
-          this.createPool("water", 280, 560, 70, 20);
-          this.createPool("poison", 430, 560, 70, 20);
-          this.createPool("lava", 580, 560, 70, 20);
-          this.createPool("water", 130, 500, 60, 20);
-          this.createPool("lava", 300, 440, 60, 20);
-          this.createPool("poison", 480, 320, 60, 20);
-          
-          this.createDoor("fire", 380, 90);
-          this.createDoor("water", 420, 90);
-          
-          // Challenging gem positions
-          this.createGem("fire", 80, 490);
-          this.createGem("water", 230, 430);
-          this.createGem("fire", 380, 370);
-          this.createGem("water", 530, 310);
-          this.createGem("fire", 680, 250);
-          this.createGem("water", 130, 350);
-          this.createGem("fire", 280, 290);
-          this.createGem("water", 430, 230);
-        }
-
-        createLevel4() {
-          // Level 4: Maze-like - Complex navigation
+          // Level 3: Maze-like - Complex navigation
           this.createPlatform(0, 580, 800, 20); // Ground
           // Left side path
           this.createPlatform(50, 520, 60, 20);
@@ -255,7 +217,7 @@ const floodFacts = [
           this.createPlatform(250, 150, 300, 20);
           
           // Many hazards
-          this.createPool("lava", 110, 560, 40, 20);
+          this.createPool("lava", 120, 560, 40, 20);
           this.createPool("water", 210, 560, 40, 20);
           this.createPool("poison", 360, 560, 40, 20);
           this.createPool("lava", 460, 560, 40, 20);
@@ -283,8 +245,8 @@ const floodFacts = [
           this.createGem("water", 730, 270);
         }
 
-        createLevel5() {
-          // Level 5: Final Challenge - Fast flood, precise timing
+        createLevel4() {
+          // Level 4: Final Challenge - Fast flood, precise timing
           this.createPlatform(0, 580, 800, 20); // Ground
           
           // Narrow platforms requiring precise jumps
