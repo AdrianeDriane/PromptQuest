@@ -14,8 +14,8 @@ class Game {
     this.watergirl = document.getElementById("watergirl");
     this.flood = document.getElementById("flood");
 
-    this.level = 1;
-    this.gems = { collected: 0, total: 4 };
+    this.level = 1;       // current level
+    this.maxLevels = 5;   // total levels
     this.floodHeight = 0;
     this.floodRiseSpeed = 0.5;
     this.gameRunning = true;
@@ -75,36 +75,108 @@ class Game {
       });
   }
 
-  createLevel() {
-    this.clearLevel();
+createLevel() {
+  this.clearLevel();
 
-    // Create platforms
-    this.createPlatform(0, 580, 800, 20); // Ground
-    this.createPlatform(200, 480, 150, 20);
-    this.createPlatform(450, 380, 150, 20);
-    this.createPlatform(100, 350, 100, 20);
-    this.createPlatform(600, 450, 100, 20);
-    this.createPlatform(300, 250, 200, 20);
-    this.createPlatform(650, 300, 100, 20);
-    this.createPlatform(50, 200, 120, 20);
 
-    // Create pools
-    this.createPool("lava", 160, 560, 80, 20);
-    this.createPool("water", 350, 560, 80, 20);
-    this.createPool("poison", 500, 560, 80, 20);
-    this.createPool("lava", 400, 360, 60, 20);
-    this.createPool("water", 550, 430, 60, 20);
+  this.gems = { collected: 0, total: 0 };
 
-    // Create doors
-    this.createDoor("fire", 680, 240);
-    this.createDoor("water", 720, 240);
+  switch (this.level) {
+    case 1: // Level 1 - Easy intro with doors above
+    this.createPlatform(0, 580, 800, 20);   // Ground floor
+    this.createPlatform(120, 500, 150, 20); // First platform closer & lower
+    this.createPlatform(350, 420, 150, 20); // Second platform reachable
+    this.createPlatform(600, 340, 150, 20); // Upper platform for doors
 
-    // Create gems
-    this.createGem("fire", 250, 450);
-    this.createGem("water", 500, 350);
-    this.createGem("fire", 650, 470);
-    this.createGem("water", 320, 220);
+    // Pools on the ground (shifted right so spawn area is safe)
+    this.createPool("lava", 250, 560, 80, 20);
+    this.createPool("water", 450, 560, 80, 20);
+
+    // Doors placed on the upper platform
+    this.createDoor("fire", 620, 280);
+    this.createDoor("water", 670, 280);
+
+    // Gems to encourage exploration
+    this.createGem("fire", 160, 470);  // near first platform
+    this.createGem("water", 620, 310); // near doors
+    break;
+
+
+    case 2: // Trickier climbs + poison
+      this.createPlatform(0, 580, 800, 20);
+      this.createPlatform(150, 480, 120, 20);
+      this.createPlatform(400, 400, 150, 20);
+      this.createPlatform(650, 320, 120, 20); // Doors platform
+
+      this.createPool("poison", 300, 560, 120, 20);
+
+      this.createDoor("fire", 660, 260);
+      this.createDoor("water", 700, 260);
+
+      this.createGem("fire", 180, 450);
+      this.createGem("water", 420, 370);
+      break;
+
+    case 3: // Triple pools
+      this.createPlatform(0, 580, 800, 20);
+      this.createPlatform(250, 480, 120, 20);
+      this.createPlatform(500, 380, 150, 20);
+      this.createPlatform(700, 300, 100, 20);
+
+      // Pools across bottom
+      this.createPool("lava", 150, 560, 120, 20);
+      this.createPool("water", 350, 560, 120, 20);
+      this.createPool("poison", 550, 560, 120, 20);
+
+      this.createDoor("fire", 710, 240);
+      this.createDoor("water", 750, 240);
+
+      this.createGem("fire", 280, 450);
+      this.createGem("water", 530, 350);
+      break;
+
+    case 4: // Narrow jumps, hazards spread
+      this.createPlatform(0, 580, 800, 20);
+      this.createPlatform(280, 480, 200, 20);
+      this.createPlatform(550, 400, 180, 20);
+
+      // Hazard gauntlet
+      this.createPool("poison", 300, 560, 100, 20);
+      this.createPool("lava", 320, 560, 120, 20);
+      this.createPool("water", 560, 560, 120, 20);
+
+      this.createDoor("fire", 600, 340);
+      this.createDoor("water", 660, 340);
+
+      this.createGem("fire", 320, 450);
+      this.createGem("water", 580, 370);
+      break;
+
+    case 5: // Final climb challenge
+      this.createPlatform(0, 580, 800, 20);
+      this.createPlatform(120, 480, 150, 20);
+      this.createPlatform(350, 400, 150, 20);
+      this.createPlatform(600, 320, 150, 20);
+      this.createPlatform(700, 240, 100, 20); // Doors
+
+      // Pools stacked
+      this.createPool("lava", 180, 560, 100, 20);
+      this.createPool("water", 400, 560, 100, 20);
+      this.createPool("poison", 620, 560, 120, 20);
+
+      this.createDoor("fire", 710, 180);
+      this.createDoor("water", 750, 180);
+
+      this.createGem("fire", 380, 370);
+      this.createGem("water", 630, 290);
+      break;
+      
   }
+
+    this.gems.total = this.gameGems.length;
+    this.updateUI();
+}
+
 
   createPlatform(x, y, width, height) {
     const platform = document.createElement("div");
@@ -296,22 +368,39 @@ class Game {
   }
 
 
-  winGame() {
+ winGame() {
   this.gameRunning = false;
 
-  // Show win modal
-  const modal = document.getElementById("win-modal");
-  document.getElementById("gameover-message").textContent = "✅ Level Complete! Well done!";
-  document.getElementById("gameover-message").style.color = "green"; // green text
-  document.getElementById("flood-fact").textContent = "🎉 Great teamwork! You escaped the flood this time.";
-  modal.classList.remove("hidden");
+  const winModal = document.getElementById("win-modal");
+  const winMessage = document.getElementById("win-message");
+  const winExtra = document.getElementById("win-extra");
 
-  // Restart button
-  document.getElementById("win-restart-btn").onclick = () => {
-    modal.classList.add("hidden");
-    this.restart();
-  };
+  winModal.classList.remove("hidden");
+
+  if (this.level < this.maxLevels) {
+    // Not yet the last level
+    winMessage.textContent = `✅ Level ${this.level} Complete!`;
+    winExtra.textContent = "🎉 Great teamwork! Get ready for the next challenge!";
+
+    document.getElementById("win-modal-btn").onclick = () => {
+      winModal.classList.add("hidden");
+      this.level++;       // go to the next level
+      this.restart();     // reset game state
+    };
+  } else {
+    // Final level beaten
+    winMessage.textContent = "🏆 Final Victory!";
+    winExtra.textContent = "🌊 You stopped the corruption and saved the city!";
+
+    document.getElementById("win-modal-btn").onclick = () => {
+      winModal.classList.add("hidden");
+      this.level = 1;     // reset to Level 1
+      this.restart();
+    };
+  }
 }
+
+
 
 
   gameOver(message) {
@@ -376,34 +465,37 @@ class Game {
     }, 100);
   }
 
-  restart() {
-    this.gameRunning = true;
-    this.gems.collected = 0;
-    this.floodHeight = 0;
+ restart() {
+  this.gameRunning = true;
+  this.gems.collected = 0;
+  this.floodHeight = 0;
 
-    this.characters.fireboy = {
-      x: 50,
-      y: 520,
-      width: 32,
-      height: 32,
-      onGround: false,
-      velY: 0,
-    };
-    this.characters.watergirl = {
-      x: 100,
-      y: 520,
-      width: 32,
-      height: 32,
-      onGround: false,
-      velY: 0,
-    };
+  // Spawn characters higher to avoid instant collision with pools
+  this.characters.fireboy = {
+    x: 50,
+    y: 500, // instead of 520
+    width: 32,
+    height: 32,
+    onGround: false,
+    velY: 0,
+  };
+  this.characters.watergirl = {
+    x: 100,
+    y: 500, // instead of 520
+    width: 32,
+    height: 32,
+    onGround: false,
+    velY: 0,
+  };
 
-    document.getElementById("game-status").textContent = "";
-    this.createLevel();
-    this.updateUI();
-    this.gameLoop();
-    this.floodTimer();
-  }
+  document.getElementById("game-status").textContent = "";
+  this.createLevel();
+  this.updateUI();
+  this.gameLoop();
+  this.floodTimer();
+}
+
+
 }
 
 // Initialize the game when page loads
